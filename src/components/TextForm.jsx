@@ -12,15 +12,38 @@ const context=useContext(Context)
     const setData = () => {
         if (change === '') {
             setMessage('Please enter some text');
+            removeMessages();
         } else {
             let storedValues = JSON.parse(localStorage.getItem('data')) || [];
             storedValues.push(change);
             localStorage.setItem('data', JSON.stringify(storedValues));
             setMessage('Text saved successfully!');
+            removeMessages();
             getItems();
             setChange('');
         }
     };
+
+    const deleteData=(index)=>{
+        let storedValues = JSON.parse(localStorage.getItem('data')) || [];
+        storedValues.splice(index,1)
+        localStorage.setItem('data', JSON.stringify(storedValues));
+        getItems();
+        setMessage("Text Deleted Successfully")
+        removeMessages();
+    }
+
+    const editData=(index)=>{
+        let storedValues = JSON.parse(localStorage.getItem('data')) || [];
+        setChange(storedValues[index])
+        storedValues.splice(index,1)
+        localStorage.setItem('data', JSON.stringify(storedValues));
+        getItems();
+        setMessage("Text For Editing")
+        removeMessages();
+       
+    }
+
 
     const getItems = () => {
         const data = JSON.parse(localStorage.getItem('data')) || [];
@@ -48,10 +71,27 @@ const context=useContext(Context)
         setChange('');
     };
 
+    const copyData=()=>{
+       navigator.clipboard.writeText(change)
+       setMessage("Text Copied Successfully")
+       removeMessages();
+    }
+    const reduceSpaces=()=>{
+      let newText=change.split(/[ ]+/)
+      setChange(newText.join(" "))
+    }
+
+    const removeMessages = () => {
+        setTimeout(() => {
+          setMessage("");
+        }, 2000);
+      };
+      
+
     return (
         <>
             <div className="container my-3 mx-auto" style={context.Mode}>
-                <div className="max-w-2xl mx-auto mt-4 flex justify-center gap-4 flex-col">
+                <div className="max-w-4xl mx-auto mt-4 flex justify-center gap-4 flex-col">
                     <h1 className='text-center font-bold mb-11 text-4xl'>Welcome To Text Utils</h1>
                     <label htmlFor="textData" className=''>Enter Your Text Below</label>
                     <textarea  style={context.Mode}
@@ -68,19 +108,25 @@ const context=useContext(Context)
                         <button onClick={ChangeToUpperCase} className="btn btn-primary bg-[#333] text-white rounded-xl w-fit px-4 py-2">Convert to UpperCase</button>
                         <button onClick={ChangeToLowerCase} className="btn btn-primary bg-[#333] text-white rounded-xl w-fit px-4 py-2">Convert to LowerCase</button>
                         <button onClick={ChangeReset} className="btn btn-primary bg-[#333] text-white rounded-xl w-fit px-4 py-2">Reset</button>
+                        <button onClick={reduceSpaces} className="btn btn-primary bg-[#333] text-white rounded-xl w-fit px-4 py-2">Remove Extra Space</button>
                         <button onClick={setData} className="btn btn-primary bg-[#333] text-white rounded-xl w-fit px-4 py-2">Save</button>
+                        <button onClick={copyData} className="btn btn-primary bg-[#333] text-white rounded-xl w-fit px-4 py-2">Copy</button>
                     </div>
                     {message && <p className='text-green-500'>{message}</p>}
                 </div>
             </div>
-            <div className="container my-6 mx-[28vw] flex flex-col gap-4 w-fit" style={context.Mode}>
+            <div className="container my-6 mx-[20vw] flex flex-col gap-4 max-w-4xl" style={context.Mode}>
                 <h1 className='text-xl font-bold'>Your Text Summary</h1>
                 <p className='text-lg'>You have {change.length} characters and {change.split(' ').filter(Boolean).length} words.</p>
                 <p className='text-lg'>On average, you need {(change.split(' ').filter(Boolean).length * 0.0032).toFixed(2)} minutes to read {change.split(' ').filter(Boolean).length} words.</p>
                 <h2 className="text-lg font-bold">Saved Texts</h2>
                 {getData.length > 0 ? (
                     getData.map((data, index) => (
-                        <p key={index} className='text-lg'>{data}</p>
+                        <div  key={index} className="flex my-4 gap-4">
+                            <p className='text-lg'>{data}</p>
+                            <button onClick={()=>editData(index)} className="btn btn-primary bg-[#333] text-white rounded-xl w-fit px-4 py-2">Edit</button>
+                            <button onClick={()=>deleteData(index)} className="btn btn-primary bg-[#333] text-white rounded-xl w-fit px-4 py-2">Delete</button>
+                        </div>
                     ))
                 ) : (
                     <p className='text-lg'>No texts saved.</p>
