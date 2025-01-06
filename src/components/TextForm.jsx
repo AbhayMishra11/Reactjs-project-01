@@ -90,7 +90,8 @@ const context=useContext(Context)
 
     return (
         <>
-            <div className="container my-3 mx-auto" style={context.Mode}>
+           <div className="lg:h-full min-h-screen">
+           <div className="container my-3 mx-auto" style={context.Mode}>
                 <div className="max-w-4xl mx-auto mt-4 flex justify-center gap-4 flex-col">
                     <h1 className='text-center font-bold mb-11 text-4xl'>Welcome To Text Utils</h1>
                     <label htmlFor="textData" className=''>Enter Your Text Below</label>
@@ -104,20 +105,20 @@ const context=useContext(Context)
                         rows={8} 
                         placeholder='Enter Your Text Here'
                     ></textarea>
-                    <div className="btns flex gap-4 justify-start" style={context.Mode}>
+                    <div className="btns flex gap-4 flex-wrap justify-start" style={context.Mode}>
                         <button onClick={ChangeToUpperCase} className="btn btn-primary bg-[#333] text-white rounded-xl w-fit px-4 py-2">Convert to UpperCase</button>
                         <button onClick={ChangeToLowerCase} className="btn btn-primary bg-[#333] text-white rounded-xl w-fit px-4 py-2">Convert to LowerCase</button>
                         <button onClick={ChangeReset} className="btn btn-primary bg-[#333] text-white rounded-xl w-fit px-4 py-2">Reset</button>
                         <button onClick={reduceSpaces} className="btn btn-primary bg-[#333] text-white rounded-xl w-fit px-4 py-2">Remove Extra Space</button>
                         <button onClick={setData} className="btn btn-primary bg-[#333] text-white rounded-xl w-fit px-4 py-2">Save</button>
-                        <button onClick={copyData} className="btn btn-primary bg-[#333] text-white rounded-xl w-fit px-4 py-2">Copy</button>
+                        <button onClick={copyData}  className="btn btn-primary bg-[#333] text-white rounded-xl w-fit px-4 py-2">Copy</button>
                     </div>
                     {message && <p className='text-green-500'>{message}</p>}
                 </div>
             </div>
-            <div className="container my-6 mx-[20vw] flex flex-col gap-4 max-w-4xl" style={context.Mode}>
+            <div className="container my-6 mx-[20vw] flex flex-col gap-4 max-w-fit" style={context.Mode}>
                 <h1 className='text-xl font-bold'>Your Text Summary</h1>
-                <p className='text-lg'>You have {change.length} characters and {change.split(' ').filter(Boolean).length} words.</p>
+                <p className='text-lg'>You have {change.split(' ').filter((e)=>{return e.length!=0}).length} characters and {change.split(' ').filter(Boolean).length} words.</p>
                 <p className='text-lg'>On average, you need {(change.split(' ').filter(Boolean).length * 0.0032).toFixed(2)} minutes to read {change.split(' ').filter(Boolean).length} words.</p>
                 <h2 className="text-lg font-bold">Saved Texts</h2>
                 {getData.length > 0 ? (
@@ -132,6 +133,7 @@ const context=useContext(Context)
                     <p className='text-lg'>No texts saved.</p>
                 )}
             </div>
+           </div>
         </>
     );
 };
